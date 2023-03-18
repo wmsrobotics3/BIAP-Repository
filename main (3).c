@@ -16,7 +16,7 @@ void drive (int distance,int velocity){
  cmpc(0);
  while (abs(gmpc(0)) < distance){
   mav(0,velocity);
-  mav(1,velocity+140);
+  mav(1,velocity);
  }
  mav(0,0);
  mav(1,0);
@@ -72,7 +72,26 @@ void line_follow(int distance, int velocity){
    msleep(34);   
  }
 }
-int arm_center = 1354;//arm is port 0
+
+void servo( int port, int target_position, int pause_time)
+{
+ int current_position = get_servo_position(port);
+  while (current_position != target_position)
+  {
+      if (current_position < target_position) 
+      {
+          current_position++;
+      }
+      else 
+      {
+          current_position--; 
+      }
+
+      set_servo_position(port, current_position);
+      msleep(pause_time);
+  }
+}
+int arm_center = 913;//arm is port 0
 int arm_left = 1770;
 int arm_right = 999;
 
@@ -88,14 +107,18 @@ int claw_open = 1416;
 int main()
 {
 	enable_servos();
-   	turn_left(980, 1000);//from starting box turning a 90* angle turn
-    drive(8200, 1200);//drives foward for apporxiamtely 7300 ticks
-    turn_right(980,1000);//turns right from roomba starting box
+    servo(1,claw_open,10);
+    msleep(100);
+    turn_left(1150, 1000);//from starting box turning a 90* angle turn
+    servo(0,arm_center,10);
+    msleep(100);
+    drive(9300, 1200);//drives foward for apporxiamtely 7300 ticks
+    turn_right(1050,1000);//turns right from roomba starting box
     drive(1990,1000);//drives foward to align itself with the black line in order to line follow(facing foward)
-    turn_right(990,1000);//turn to face the black line (facing the black line)
-     
+    turn_right(1250,1000);//turn to face the black line (facing the black line)
+    
    
    
     
-    
+    return 0;
 }
